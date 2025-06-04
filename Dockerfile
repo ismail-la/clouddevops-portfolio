@@ -30,7 +30,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.js ./
 # Copy .env if present
-COPY --from=builder /app/.env ./.env
+# COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/.env ./.env || true
 
 EXPOSE 3000
 
