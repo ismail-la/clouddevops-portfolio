@@ -5,7 +5,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  imageName: "clouddevops-portfolio"
+  imageName: "lahbariismail1991/clouddevops-portfolio"
 
 stages:
   - stage: Build
@@ -22,7 +22,8 @@ stages:
               containerRegistry: "dockerhub-connection" # Optional if no ACR
               repository: $(imageName)
               command: "buildAndPush"
-              Dockerfile: "**/Dockerfile"
+              Dockerfile: "Dockerfile"
+              buildContext: "$(Build.SourcesDirectory)"
               tags: |
                 latest
 
