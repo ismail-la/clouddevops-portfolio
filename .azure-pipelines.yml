@@ -6,7 +6,7 @@ pool:
 
 variables:
   imageName: "lahbariismail1991/clouddevops-portfolio"
-
+  dockerId: 'lahbariismail1991'  # Docker Hub username
 stages:
   - stage: Build
     displayName: "Build Docker Image"
