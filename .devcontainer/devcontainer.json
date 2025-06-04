@@ -1,0 +1,9 @@
+{
+  "name": "DevOps-Portfolio",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "terraform": "latest",
+    "azure-cli": "latest",
+    "git": "latest"
+  }
+}

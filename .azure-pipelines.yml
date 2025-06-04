@@ -1,0 +1,31 @@
+trigger:
+  - devops
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  imageName: "clouddevops-portfolio"
+
+stages:
+  - stage: Build
+    displayName: "Build Docker Image"
+    jobs:
+      - job: BuildJob
+        displayName: "Docker Build"
+        steps:
+          - task: Checkout@1
+
+          - task: Docker@2
+            displayName: "Build And Push Docker Image"
+            inputs:
+              containerRegistry: "dockerhub-connection" # Optional if no ACR
+              repository: $(imageName)
+              command: "buildAndPush"
+              Dockerfile: "**/Dockerfile"
+              tags: |
+                latest
+
+          - script: |
+              echo "✅ Docker image built successfully."
+            displayName: "Notify Success"
