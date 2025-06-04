@@ -28,5 +28,13 @@ stages:
               tags: |
                 latest
 
+          - script: npm audit --audit-level=high
+            displayName: "Audit Node.js dependencies"
+
+          - script: |
+              curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+              ./trivy image $(dockerId)/$(imageName):latest --exit-code 1 --severity HIGH,CRITICAL
+            displayName: "Scan Docker image with Trivy"
+
           - script: echo "✅ Docker image built and pushed to Docker Hub."
             displayName: "Log Success"
