@@ -6,27 +6,27 @@ pool:
 
 variables:
   imageName: "clouddevops-portfolio"
-  dockerId: 'lahbariismail1991'  # Docker Hub username
+  dockerId: "lahbariismail1991"
+
 stages:
-  - stage: Build
-    displayName: "Build Docker Image"
+  - stage: BuildAndPush
+    displayName: "Build and Push to Docker Hub"
     jobs:
-      - job: BuildJob
-        displayName: "Docker Build"
+      - job: DockerPush
+        displayName: "Build & Push Docker Image"
         steps:
-          - task: Checkout@1
+          - checkout: self
 
           - task: Docker@2
-            displayName: "Build And Push Docker Image"
+            displayName: "Build and Push Docker Image"
             inputs:
-              containerRegistry: "dockerhub-connection" # Optional if no ACR
-              repository: $(imageName)
-              command: "buildAndPush"
+              containerRegistry: "dockerhub-connection" # Must match service connection name
+              repository: "$(dockerId)/$(imageName)"
+              command: buildAndPush
               Dockerfile: "Dockerfile"
               buildContext: "$(Build.SourcesDirectory)"
               tags: |
                 latest
 
-          - script: |
-              echo "✅ Docker image built successfully."
-            displayName: "Notify Success"
+          - script: echo "✅ Docker image built and pushed to Docker Hub."
+            displayName: "Log Success"
