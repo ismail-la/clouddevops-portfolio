@@ -19,6 +19,51 @@
   - Only production dependencies installed in final image.
   - Automated linting and type-checking (see `.github/workflows/`).
 
+## 🟦 Azure Pipelines
+
+This project includes an [Azure Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines/) configuration for CI/CD and DevSecOps:
+
+- **Builds and pushes Docker images** to Docker Hub using a secure service connection.
+- **Runs security checks**:
+  - `npm audit --audit-level=high` for Node.js dependencies.
+  - [Trivy](https://github.com/aquasecurity/trivy) scan for Docker image vulnerabilities.
+- **Follows best practices**:
+  - Only production dependencies in the final image.
+  - No secrets or `.env` files in the image.
+  - Infrastructure as Code with Terraform (see `/infra/terraform`).
+
+**Pipeline file:**  
+`.azure-pipelines.yml`
+
+**Example pipeline steps:**
+```yaml
+- task: Docker@2
+  displayName: "Build and Push Docker Image"
+  inputs:
+    containerRegistry: "dockerhub-connection"
+    repository: "$(dockerId)/$(imageName)"
+    command: buildAndPush
+    Dockerfile: "Dockerfile"
+    buildContext: "$(Build.SourcesDirectory)"
+    tags: |
+      latest
+
+- script: npm audit --audit-level=high
+  displayName: "Audit Node.js dependencies"
+
+- script: |
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+    ./trivy image $(dockerId)/$(imageName):latest --exit-code 1 --severity HIGH,CRITICAL
+  displayName: "Scan Docker image with Trivy"
+```
+**To run the pipeline:**  
+
+- Push to the `devops` branch (see `trigger` in `.azure-pipelines.yml`).
+- Monitor results in Azure DevOps.
+
+---
+
+**You can copy-paste this section into your README.md to clearly document your Azure Pipelines DevOps/DevSecOps setup!**
 ---
 
 ## 🌟 Live Demo
